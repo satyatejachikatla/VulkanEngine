@@ -1,0 +1,9 @@
+version: '3.1'
+services:
+  build_system:
+    build: ./build
+    image: build
+    volumes:
+      - ..:/app/files
+    environment:
+      - MY_VARIABLE=1
