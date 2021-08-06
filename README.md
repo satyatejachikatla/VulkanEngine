@@ -12,7 +12,7 @@ cd /app/files
 make
 ```
 
-# Referencces
+# References
 
 * Vulkan Tutorial : https://vulkan-tutorial.com/
 * Brendan Galea Tutorial Series : https://www.youtube.com/watch?v=Y9U9IE0gVHA&list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR
