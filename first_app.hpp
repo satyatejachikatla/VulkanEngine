@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ve_window/ve_window.hpp>
+#include <ve_pipeline/ve_pipeline.hpp>
 
 namespace ve {
     class FirstApp {
@@ -14,6 +15,6 @@ namespace ve {
         private:
         
         VeWindow veWindow{WIDTH, HEIGHT, "Hello World"};
-
+        VePipeline vePipeline{"shaders/simple_shader.vert.spv","shaders/simple_shader.frag.spv"};
     };
 }

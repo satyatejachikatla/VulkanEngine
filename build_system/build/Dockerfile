@@ -41,7 +41,7 @@ RUN \
 RUN \
     cd /vendor/glslc && \
     tar -xvf install.tgz && \
-    ln -sf /vendor/glslc/vendor/glslc /usr/local/bin/glslc
+    ln -sf /vendor/glslc/install/bin/glslc /usr/local/bin/glslc
 
 # Build Tools
 

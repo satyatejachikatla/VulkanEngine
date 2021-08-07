@@ -21,6 +21,5 @@ docker exec -it $DOCKER_ID /bin/bash
 ### Stop build container
 
 ```
-docker-compose build
-docker-compose up
+docker-compose down
 ```
