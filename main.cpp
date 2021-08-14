@@ -1,4 +1,5 @@
 #include <first_app.hpp>
+#include <ve_device/ve_device.hpp>
 
 #include <cstdlib>
 #include <iostream>

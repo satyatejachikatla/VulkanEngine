@@ -2,6 +2,7 @@
 
 #include <ve_window/ve_window.hpp>
 #include <ve_pipeline/ve_pipeline.hpp>
+#include <ve_device/ve_device.hpp>
 
 namespace ve {
     class FirstApp {
@@ -15,6 +16,12 @@ namespace ve {
         private:
         
         VeWindow veWindow{WIDTH, HEIGHT, "Hello World"};
-        VePipeline vePipeline{"shaders/simple_shader.vert.spv","shaders/simple_shader.frag.spv"};
+        VeDevice veDevice{veWindow};
+        VePipeline vePipeline{
+            veDevice,
+            "shaders/simple_shader/simple_shader.vert.spv",
+            "shaders/simple_shader/simple_shader.frag.spv",
+            VePipeline::defaultPipelineConfigInfo(WIDTH,HEIGHT)
+            };
     };
 }
