@@ -1,5 +1,6 @@
 #include <ve_window/ve_window.hpp>
 #include <stdexcept>
+
 namespace ve {
 
     VeWindow::VeWindow(int w,int h,std::string name) : width(w) , height(h), windowName(name) {
