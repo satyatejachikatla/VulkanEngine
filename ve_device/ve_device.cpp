@@ -119,6 +119,12 @@ void VeDevice::pickPhysicalDevice() {
   vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
   for (const auto &device : devices) {
+    VkPhysicalDeviceProperties propertiesTemp;
+    vkGetPhysicalDeviceProperties(device, &propertiesTemp);
+    std::cout << "available physical device name: " << propertiesTemp.deviceName << std::endl;
+  }
+
+  for (const auto &device : devices) {
     if (isDeviceSuitable(device)) {
       physicalDevice = device;
       break;
@@ -130,7 +136,7 @@ void VeDevice::pickPhysicalDevice() {
   }
 
   vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-  std::cout << "physical device: " << properties.deviceName << std::endl;
+  std::cout << "picked physical device: " << properties.deviceName << std::endl;
 }
 
 void VeDevice::createLogicalDevice() {
