@@ -118,8 +118,9 @@ void VeDevice::pickPhysicalDevice() {
   std::vector<VkPhysicalDevice> devices(deviceCount);
   vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
+  VkPhysicalDeviceProperties propertiesTemp;
+
   for (const auto &device : devices) {
-    VkPhysicalDeviceProperties propertiesTemp;
     vkGetPhysicalDeviceProperties(device, &propertiesTemp);
     std::cout << "available physical device name: " << propertiesTemp.deviceName << std::endl;
   }
@@ -127,7 +128,11 @@ void VeDevice::pickPhysicalDevice() {
   for (const auto &device : devices) {
     if (isDeviceSuitable(device)) {
       physicalDevice = device;
-      break;
+
+      vkGetPhysicalDeviceProperties(device, &propertiesTemp);
+      // Force pick RTX 2060 card
+      if (std::string(propertiesTemp.deviceName).find("RTX 2060") != std::string::npos )
+        break;
     }
   }
 
