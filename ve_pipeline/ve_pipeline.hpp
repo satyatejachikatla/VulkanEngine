@@ -30,6 +30,8 @@ namespace ve {
         VePipeline(const VePipeline&) = delete;
         void operator=(const VePipeline&) = delete;
 
+        void bind(VkCommandBuffer commandBuffer);
+
         static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width,uint32_t height);
 
         private:

@@ -58,6 +58,11 @@ RUN \
     libxxf86vm-dev \
     libxi-dev
 
+# For cpp lib search
+RUN \
+    apt-get install -y \
+    pkg-config
+
 # To keep docker container up
 RUN \
     mkdir /app
