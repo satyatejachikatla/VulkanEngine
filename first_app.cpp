@@ -120,9 +120,9 @@ namespace ve {
 
     void FirstApp::loadModels() {
         std::vector<VeModel::Vertex> vertices {
-            {{ .0f,-.5f}},
-            {{ .5f, .5f}},
-            {{-.5f, .5f}}
+            {{ .0f,-.5f} , {1.f,0.f,.0f}},
+            {{ .5f, .5f} , {0.f,1.f,.0f}},
+            {{-.5f, .5f} , {0.f,0.f,1.f}}
         };
 
         veModel = std::make_unique<VeModel>(veDevice,vertices);
