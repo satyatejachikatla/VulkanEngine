@@ -12,6 +12,14 @@ cd /app/files
 make
 ```
 
+## Runing
+
+Make sure install necessary video card and vulkan drivers before running.
+
+```
+./a.out
+```
+
 # References
 
 * Vulkan Tutorial : https://vulkan-tutorial.com/
