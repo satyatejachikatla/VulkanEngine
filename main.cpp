@@ -5,12 +5,16 @@
 #include <iostream>
 #include <stdexcept>
 
-int main () {
+int main()
+{
     ve::FirstApp app{};
 
-    try {
+    try
+    {
         app.run();
-    } catch(const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }

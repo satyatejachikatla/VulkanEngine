@@ -5,12 +5,14 @@
 #include <string>
 #include <vector>
 
-namespace ve {
+namespace ve
+{
 
-    struct PipelineConfigInfo {
+    struct PipelineConfigInfo
+    {
 
-        PipelineConfigInfo(const PipelineConfigInfo&) = delete;
-        PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;        
+        PipelineConfigInfo(const PipelineConfigInfo &) = delete;
+        PipelineConfigInfo &operator=(const PipelineConfigInfo &) = delete;
 
         VkPipelineViewportStateCreateInfo viewportInfo;
         VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
@@ -26,27 +28,27 @@ namespace ve {
         uint32_t subpass = 0;
     };
 
-    class VePipeline {
-        public:
-        
-        VePipeline(VeDevice& device, const std::string& vertFilepath , const std::string& fragFilepath, const PipelineConfigInfo& configInfo);
+    class VePipeline
+    {
+    public:
+        VePipeline(VeDevice &device, const std::string &vertFilepath, const std::string &fragFilepath, const PipelineConfigInfo &configInfo);
         ~VePipeline();
 
-        VePipeline(const VePipeline&) = delete;
-        VePipeline& operator=(const VePipeline&) = delete;
+        VePipeline(const VePipeline &) = delete;
+        VePipeline &operator=(const VePipeline &) = delete;
 
         void bind(VkCommandBuffer commandBuffer);
 
-        static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
+        static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo);
 
-        private:
-        static std::vector<char> readFile(const std::string& filepath);
+    private:
+        static std::vector<char> readFile(const std::string &filepath);
 
-        void createGraphicsPipeline(const std::string& vertFilepath , const std::string& fragFilepath, const PipelineConfigInfo& configInfo);
+        void createGraphicsPipeline(const std::string &vertFilepath, const std::string &fragFilepath, const PipelineConfigInfo &configInfo);
 
-        void createShaderModule(const std::vector<char>& code, VkShaderModule* vkShaderModule);
+        void createShaderModule(const std::vector<char> &code, VkShaderModule *vkShaderModule);
 
-        VeDevice& veDevice;
+        VeDevice &veDevice;
         VkPipeline graphicsPipeline;
         VkShaderModule vertShaderModule;
         VkShaderModule fragShaderModule;

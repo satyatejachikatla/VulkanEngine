@@ -4,21 +4,26 @@
 #include <stdexcept>
 #include <array>
 
-namespace ve {
+namespace ve
+{
 
-    FirstApp::FirstApp() {
+    FirstApp::FirstApp()
+    {
         loadModels();
         createPipelineLayout();
         recreateSwapChain();
         createCommandBuffers();
     }
 
-    FirstApp::~FirstApp() {
+    FirstApp::~FirstApp()
+    {
         vkDestroyPipelineLayout(veDevice.device(), pipelineLayout, nullptr);
     }
 
-    void FirstApp::run(){
-        while(!veWindow.shouldClose()) {
+    void FirstApp::run()
+    {
+        while (!veWindow.shouldClose())
+        {
             glfwPollEvents();
             drawFrame();
         }
@@ -26,23 +31,32 @@ namespace ve {
         vkDeviceWaitIdle(veDevice.device());
     }
 
-    void FirstApp::createPipelineLayout() {
+    void FirstApp::createPipelineLayout()
+    {
+
+        VkPushConstantRange pushConstantRange{};
+
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+        pushConstantRange.offset = 0;
+        pushConstantRange.size = sizeof(SimplePushConstantData);
+
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pSetLayouts = nullptr;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
-        pipelineLayoutInfo.pPushConstantRanges = nullptr;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
-        if (vkCreatePipelineLayout(veDevice.device(), &pipelineLayoutInfo, nullptr,&pipelineLayout)
-            != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(veDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
+        {
             throw std::runtime_error("failed to create pipeline layout!");
         }
     }
 
-    void FirstApp::createPipeline() {
-        assert (veSwapChain != nullptr && "Cannot create pipeline before swap chain");
-        assert (pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
+    void FirstApp::createPipeline()
+    {
+        assert(veSwapChain != nullptr && "Cannot create pipeline before swap chain");
+        assert(pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
 
         PipelineConfigInfo pipelineConfig{};
         VePipeline::defaultPipelineConfigInfo(pipelineConfig);
@@ -53,9 +67,9 @@ namespace ve {
             "./shaders/simple_shader/simple_shader.vert.spv",
             "./shaders/simple_shader/simple_shader.frag.spv",
             pipelineConfig);
-        
     }
-    void FirstApp::createCommandBuffers() {
+    void FirstApp::createCommandBuffers()
+    {
         commandBuffers.resize(veSwapChain->imageCount());
 
         VkCommandBufferAllocateInfo allocInfo{};
@@ -64,28 +78,33 @@ namespace ve {
         allocInfo.commandPool = veDevice.getCommandPool();
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
-        if (vkAllocateCommandBuffers(veDevice.device(), &allocInfo , commandBuffers.data()) 
-            != VK_SUCCESS ) {
-                throw std::runtime_error("failed to allocate command buffers!");
+        if (vkAllocateCommandBuffers(veDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to allocate command buffers!");
         }
-
     }
 
-    void FirstApp::freeCommandBuffers() {
+    void FirstApp::freeCommandBuffers()
+    {
         vkFreeCommandBuffers(
             veDevice.device(),
             veDevice.getCommandPool(),
             static_cast<uint32_t>(commandBuffers.size()),
             commandBuffers.data());
-        
+
         commandBuffers.clear();
     }
 
-    void FirstApp::recordCommandBuffer(int imageIndex) {
+    void FirstApp::recordCommandBuffer(int imageIndex)
+    {
+        static int frame = 0;
+        frame = (frame + 1) % 100;
+
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-        if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS ) {
+        if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
+        {
             throw std::runtime_error("failed to begin recording command buffers!");
         }
 
@@ -94,11 +113,11 @@ namespace ve {
         renderPassInfo.renderPass = veSwapChain->getRenderPass();
         renderPassInfo.framebuffer = veSwapChain->getFrameBuffer(imageIndex);
 
-        renderPassInfo.renderArea.offset = {0,0};
+        renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = veSwapChain->getSwapChainExtent();
 
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
+        clearValues[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
         clearValues[1].depthStencil = {1.0f, 0};
 
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -113,34 +132,55 @@ namespace ve {
         viewport.height = static_cast<uint32_t>(veSwapChain->getSwapChainExtent().height);
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
-        VkRect2D scissor{{0,0}, veSwapChain->getSwapChainExtent()};
-        vkCmdSetViewport(commandBuffers[imageIndex],0,1,&viewport);
-        vkCmdSetScissor(commandBuffers[imageIndex],0,1,&scissor);
+        VkRect2D scissor{{0, 0}, veSwapChain->getSwapChainExtent()};
+        vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
+        vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
         vePipeline->bind(commandBuffers[imageIndex]);
         veModel->bind(commandBuffers[imageIndex]);
+
+        for (int j = 0; j < 4; j++)
+        {
+            SimplePushConstantData push{};
+            push.offset = {-0.5f + frame * 0.02f, -0.4f + j * .25f};
+            push.color = {0.0f, 0.0f, 0.2f + .2f * j};
+            vkCmdPushConstants(commandBuffers[imageIndex],
+                pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(SimplePushConstantData),
+                &push);
+            veModel->draw(commandBuffers[imageIndex]);
+        }
+
         veModel->draw(commandBuffers[imageIndex]);
 
         vkCmdEndRenderPass(commandBuffers[imageIndex]);
-        if(vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
+        if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS)
+        {
             throw std::runtime_error("failed to record command buffer!");
         }
-
     }
-    
-    void FirstApp::recreateSwapChain() {
+
+    void FirstApp::recreateSwapChain()
+    {
         auto extent = veWindow.getExtent();
-        while (extent.width == 0 || extent.height == 0) {
+        while (extent.width == 0 || extent.height == 0)
+        {
             extent = veWindow.getExtent();
             glfwWaitEvents();
         }
 
         vkDeviceWaitIdle(veDevice.device());
-        if (veSwapChain == nullptr) {
-            veSwapChain = std::make_unique<VeSwapChain>(veDevice,extent);
-        } else {
-            veSwapChain = std::make_unique<VeSwapChain>(veDevice,extent,std::move(veSwapChain));
-            if (veSwapChain->imageCount() != commandBuffers.size()) {
+        if (veSwapChain == nullptr)
+        {
+            veSwapChain = std::make_unique<VeSwapChain>(veDevice, extent);
+        }
+        else
+        {
+            veSwapChain = std::make_unique<VeSwapChain>(veDevice, extent, std::move(veSwapChain));
+            if (veSwapChain->imageCount() != commandBuffers.size())
+            {
                 freeCommandBuffers();
                 createCommandBuffers();
             }
@@ -148,41 +188,45 @@ namespace ve {
         createPipeline();
     }
 
-    void FirstApp::drawFrame() {
+    void FirstApp::drawFrame()
+    {
         uint32_t imageIndex;
         auto result = veSwapChain->acquireNextImage(&imageIndex);
 
-        if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        if (result == VK_ERROR_OUT_OF_DATE_KHR)
+        {
             recreateSwapChain();
             return;
         }
 
-        if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+        {
             throw std::runtime_error("failed to acquire swap chain image!");
         }
 
         recordCommandBuffer(imageIndex);
         result = veSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
 
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || veWindow.wasWindowResized() ) {
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || veWindow.wasWindowResized())
+        {
             veWindow.resetWindowResizedFlag();
             recreateSwapChain();
             return;
         }
 
-        if (result != VK_SUCCESS) {
+        if (result != VK_SUCCESS)
+        {
             throw std::runtime_error("failed to present swap chaim image!");
         }
     }
 
+    void FirstApp::loadModels()
+    {
+        std::vector<VeModel::Vertex> vertices{
+            {{.0f, -.5f}, {1.f, 0.f, .0f}},
+            {{.5f, .5f}, {0.f, 1.f, .0f}},
+            {{-.5f, .5f}, {0.f, 0.f, 1.f}}};
 
-    void FirstApp::loadModels() {
-        std::vector<VeModel::Vertex> vertices {
-            {{ .0f,-.5f} , {1.f,0.f,.0f}},
-            {{ .5f, .5f} , {0.f,1.f,.0f}},
-            {{-.5f, .5f} , {0.f,0.f,1.f}}
-        };
-
-        veModel = std::make_unique<VeModel>(veDevice,vertices);
+        veModel = std::make_unique<VeModel>(veDevice, vertices);
     }
 }

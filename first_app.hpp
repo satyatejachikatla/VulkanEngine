@@ -6,25 +6,38 @@
 #include <ve_swap_chain/ve_swap_chain.hpp>
 #include <ve_model/ve_model.hpp>
 
+// libs
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 // std
 #include <memory>
 #include <vector>
 
-namespace ve {
-    class FirstApp {
+namespace ve
+{
 
-        public:
+    struct SimplePushConstantData
+    {
+        glm::vec2 offset;
+        alignas(16) glm::vec3 color;
+    };
+
+    class FirstApp
+    {
+
+    public:
         static constexpr int WIDTH = 800;
         static constexpr int HEIGHT = 600;
 
         FirstApp();
         ~FirstApp();
-        FirstApp(const FirstApp&) = delete;
-        FirstApp &operator=(const FirstApp&) = delete;
+        FirstApp(const FirstApp &) = delete;
+        FirstApp &operator=(const FirstApp &) = delete;
         void run();
 
-        private:
-
+    private:
         void loadModels();
         void createPipelineLayout();
         void createPipeline();

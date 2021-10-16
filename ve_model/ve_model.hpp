@@ -10,11 +10,13 @@
 //std
 #include <vector>
 
-namespace ve {
-    class VeModel {
-        public:
-
-        struct Vertex {
+namespace ve
+{
+    class VeModel
+    {
+    public:
+        struct Vertex
+        {
             glm::vec2 position;
             glm::vec3 color;
 
@@ -22,23 +24,20 @@ namespace ve {
             static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
         };
 
-        VeModel(VeDevice &veDevice,const std::vector<Vertex> &vertices);
+        VeModel(VeDevice &veDevice, const std::vector<Vertex> &vertices);
         ~VeModel();
-        VeModel(const VeModel&) = delete;
-        VeModel &operator=(const VeModel&) = delete;
+        VeModel(const VeModel &) = delete;
+        VeModel &operator=(const VeModel &) = delete;
 
         void bind(VkCommandBuffer commandBuffer);
         void draw(VkCommandBuffer commandBuffer);
 
-
-        private:
-
+    private:
         void createVertexBuffers(const std::vector<Vertex> &vertices);
 
-        VeDevice& veDevice;
+        VeDevice &veDevice;
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
         uint32_t vertexCount;
-
     };
 }
