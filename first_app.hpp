@@ -5,11 +5,8 @@
 #include <ve_device/ve_device.hpp>
 #include <ve_swap_chain/ve_swap_chain.hpp>
 #include <ve_model/ve_model.hpp>
+#include <ve_game_object/ve_game_object.hpp>
 
-// libs
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
 
 // std
 #include <memory>
@@ -17,12 +14,6 @@
 
 namespace ve
 {
-
-    struct SimplePushConstantData
-    {
-        glm::vec2 offset;
-        alignas(16) glm::vec3 color;
-    };
 
     class FirstApp
     {
@@ -38,7 +29,7 @@ namespace ve
         void run();
 
     private:
-        void loadModels();
+        void loadGameObjects();
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
@@ -46,6 +37,7 @@ namespace ve
         void drawFrame();
         void recreateSwapChain();
         void recordCommandBuffer(int imageIndex);
+        void renderGameObjects(VkCommandBuffer commandBuffer);
 
         VeWindow veWindow{WIDTH, HEIGHT, "Hello World"};
         VeDevice veDevice{veWindow};
@@ -53,6 +45,6 @@ namespace ve
         std::unique_ptr<VePipeline> vePipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
-        std::unique_ptr<VeModel> veModel;
+        std::vector<VeGameObject> gameObjects;
     };
 }
