@@ -4,7 +4,6 @@
 #include <ve_device/ve_device.hpp>
 #include <ve_swap_chain/ve_swap_chain.hpp>
 
-
 // std
 #include <memory>
 #include <vector>
@@ -17,8 +16,7 @@ namespace ve
     {
 
     public:
-
-        VeRenderer(VeWindow& window,VeDevice& device);
+        VeRenderer(VeWindow &window, VeDevice &device);
         ~VeRenderer();
         VeRenderer(const VeRenderer &) = delete;
         VeRenderer &operator=(const VeRenderer &) = delete;
@@ -28,15 +26,17 @@ namespace ve
         void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
         void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
-        VkRenderPass getSwapChainRenderPass() const {return veSwapChain->getRenderPass();}
+        VkRenderPass getSwapChainRenderPass() const { return veSwapChain->getRenderPass(); }
 
-        bool isFrameInProgress() const { return isFrameStarted;}
-        VkCommandBuffer getCurrentCommandBuffer() const {
+        bool isFrameInProgress() const { return isFrameStarted; }
+        VkCommandBuffer getCurrentCommandBuffer() const
+        {
             assert(isFrameStarted && "Cannot get command buffer when frame not in progress");
             return commandBuffers[currentFrameIndex];
         }
 
-        int getFrameIndex() const {
+        int getFrameIndex() const
+        {
             assert(isFrameStarted && "Cannot get frame index when frame not in progress");
             return currentImageIndex;
         }
@@ -46,8 +46,8 @@ namespace ve
         void freeCommandBuffers();
         void recreateSwapChain();
 
-        VeWindow& veWindow;
-        VeDevice& veDevice;
+        VeWindow &veWindow;
+        VeDevice &veDevice;
         std::unique_ptr<VeSwapChain> veSwapChain;
         std::vector<VkCommandBuffer> commandBuffers;
 

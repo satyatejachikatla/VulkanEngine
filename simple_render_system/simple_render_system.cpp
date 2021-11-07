@@ -19,7 +19,7 @@ namespace ve
         alignas(16) glm::vec3 color;
     };
 
-    SimpleRenderSystem::SimpleRenderSystem(VeDevice& device,VkRenderPass renderPass) : veDevice(device)
+    SimpleRenderSystem::SimpleRenderSystem(VeDevice &device, VkRenderPass renderPass) : veDevice(device)
     {
         createPipelineLayout();
         createPipeline(renderPass);
@@ -29,7 +29,6 @@ namespace ve
     {
         vkDestroyPipelineLayout(veDevice.device(), pipelineLayout, nullptr);
     }
-
 
     void SimpleRenderSystem::createPipelineLayout()
     {
@@ -68,24 +67,25 @@ namespace ve
             pipelineConfig);
     }
 
-
-    void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer,  std::vector<VeGameObject>& gameObjects) {
+    void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VeGameObject> &gameObjects)
+    {
         vePipeline->bind(commandBuffer);
-        for(auto& obj:gameObjects) {
+        for (auto &obj : gameObjects)
+        {
 
             obj.transform2d.rotation = glm::mod(obj.transform2d.rotation + .01f, glm::two_pi<float>());
 
-           SimplePushConstantData push{};
+            SimplePushConstantData push{};
             push.offset = obj.transform2d.translation;
             push.color = obj.color;
             push.transform = obj.transform2d.mat2();
 
             vkCmdPushConstants(commandBuffer,
-                pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(SimplePushConstantData),
-                &push);
+                               pipelineLayout,
+                               VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                               0,
+                               sizeof(SimplePushConstantData),
+                               &push);
             obj.model->bind(commandBuffer);
             obj.model->draw(commandBuffer);
         }

@@ -5,7 +5,6 @@
 #include <ve_game_object/ve_game_object.hpp>
 #include <ve_renderer/ve_renderer.hpp>
 
-
 // std
 #include <memory>
 #include <vector>
@@ -31,7 +30,7 @@ namespace ve
 
         VeWindow veWindow{WIDTH, HEIGHT, "Hello World"};
         VeDevice veDevice{veWindow};
-        VeRenderer veRenderer{veWindow,veDevice};
+        VeRenderer veRenderer{veWindow, veDevice};
 
         std::vector<VeGameObject> gameObjects;
     };

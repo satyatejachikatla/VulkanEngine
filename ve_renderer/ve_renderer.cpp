@@ -65,7 +65,8 @@ namespace ve
             std::shared_ptr<VeSwapChain> oldSwapChain = std::move(veSwapChain);
             veSwapChain = std::make_unique<VeSwapChain>(veDevice, extent, oldSwapChain);
 
-            if (!oldSwapChain->compareSwapFormats(*veSwapChain.get())) {
+            if (!oldSwapChain->compareSwapFormats(*veSwapChain.get()))
+            {
                 throw std::runtime_error("Swap chain image(or depth) format has changed");
             }
         }
@@ -125,9 +126,10 @@ namespace ve
         }
 
         isFrameStarted = false;
-        currentFrameIndex = ( currentFrameIndex + 1 ) % VeSwapChain::MAX_FRAMES_IN_FLIGHT;
+        currentFrameIndex = (currentFrameIndex + 1) % VeSwapChain::MAX_FRAMES_IN_FLIGHT;
     }
-    void VeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
+    void VeRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
+    {
         assert(isFrameStarted && "Cannot call beginSwapChainRenderPass while frame is not in progress!!");
         assert(commandBuffer == getCurrentCommandBuffer() && "Cannot begin renderpass on command buffer from a different frame");
 
@@ -158,13 +160,12 @@ namespace ve
         VkRect2D scissor{{0, 0}, veSwapChain->getSwapChainExtent()};
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
     }
-    void VeRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
+    void VeRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
+    {
 
         assert(isFrameStarted && "Cannot call endSwapChainRenderPass while frame is not in progress!!");
         assert(commandBuffer == getCurrentCommandBuffer() && "Cannot end renderpass on command buffer from a different frame");
-
 
         vkCmdEndRenderPass(commandBuffer);
     }

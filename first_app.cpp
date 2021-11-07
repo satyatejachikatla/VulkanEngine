@@ -26,7 +26,7 @@ namespace ve
 
     void FirstApp::run()
     {
-        SimpleRenderSystem simpleRenderSystem{veDevice,veRenderer.getSwapChainRenderPass()};
+        SimpleRenderSystem simpleRenderSystem{veDevice, veRenderer.getSwapChainRenderPass()};
 
         while (!veWindow.shouldClose())
         {
@@ -34,7 +34,7 @@ namespace ve
             if (auto commandBuffer = veRenderer.beginFrame())
             {
                 veRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(commandBuffer,gameObjects);
+                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
                 veRenderer.endSwapChainRenderPass(commandBuffer);
                 veRenderer.endFrame();
             }
